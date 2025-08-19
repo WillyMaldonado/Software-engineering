@@ -12,9 +12,7 @@ export async function POST(request: NextRequest) {
         isValidTitle(title);
         isValidDescription(description);
         isValidAuthor(author);
-        const connectionString = "postgresql://postgres.ketbpanwpukdbcoyvqih:admin123_:@aws-1-us-east-2.pooler.supabase.com:6543/postgres";
-        const sql = postgres(connectionString);
-        await sql`INSERT INTO publications (Title, Description, Author) VALUES (${title}, ${description}, ${author});`;
+        await connectToDatabase(title, description, author);
         console.log("Éxito");
         return NextResponse.json({
             message: 'All fields are valid'
@@ -43,5 +41,16 @@ function isValidDescription(description: string): void {
 function isValidAuthor(author: string): void {
     if (author.length < 2) {
         throw new Error("Title must be at least 2 characters")
+    }
+}
+
+async function connectToDatabase(title: string, description: string, author: string) {
+    try {
+        const connectionString = "postgresql://postgres.ketbpanwpukdbcoyvqih:admin123_:@aws-1-us-east-2.pooler.supabase.com:6543/postgres";
+        const sql = postgres(connectionString);
+        await sql`INSERT INTO publications (Title, Description, Author) VALUES (${title}, ${description}, ${author});`;
+    } catch (error) {
+        console.error('Database connection error:', error);
+        throw new Error('Database connection failed');
     }
 }
