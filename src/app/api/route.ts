@@ -1,5 +1,6 @@
 import next from "next";
 import { NextRequest, NextResponse } from "next/server";
+import postgres from "postgres";
 
 export async function POST(request: NextRequest) {
     const data = await request.json();
@@ -11,6 +12,8 @@ export async function POST(request: NextRequest) {
         isValidTitle(title);
         isValidDescription(description);
         isValidAuthor(author);
+        const connectionString = "postgresql://postgres.ketbpanwpukdbcoyvqih:adim123_:@aws-1-us-east-2.pooler.supabase.com:6543/postgres";
+        const sql = postgres(connectionString);
         console.log("Éxito");
         return NextResponse.json({
             message: 'All fields are valid'
