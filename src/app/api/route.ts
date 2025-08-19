@@ -12,8 +12,9 @@ export async function POST(request: NextRequest) {
         isValidTitle(title);
         isValidDescription(description);
         isValidAuthor(author);
-        const connectionString = "postgresql://postgres.ketbpanwpukdbcoyvqih:adim123_:@aws-1-us-east-2.pooler.supabase.com:6543/postgres";
+        const connectionString = "postgresql://postgres.ketbpanwpukdbcoyvqih:admin123_:@aws-1-us-east-2.pooler.supabase.com:6543/postgres";
         const sql = postgres(connectionString);
+        await sql`INSERT INTO publications (Title, Description, Author) VALUES (${title}, ${description}, ${author});`;
         console.log("Éxito");
         return NextResponse.json({
             message: 'All fields are valid'
