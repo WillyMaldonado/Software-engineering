@@ -1,26 +1,15 @@
-import postgres from "postgres";
 import Publication from "./publication";
-import { title } from "process";
+import PublicRepository from "./public-repository";
 
 export default class PublicRegister {
-    constructor() { }
+    private readonly repository: PublicRepository;
 
-    public async save(title: string, description: string, author: string) {
-        try {
-            const publications = Publication.create(title, description, author);
+    constructor(repository: PublicRepository) {
+        this.repository = repository;
+    }
 
-            const connectionString = "postgresql://postgres.ketbpanwpukdbcoyvqih:admin123_:@aws-1-us-east-2.pooler.supabase.com:6543/postgres";
-            const sql = postgres(connectionString);
-
-            await sql`INSERT INTO publications (title, description, author) VALUES (${publications.title.content}, 
-            ${publications.description.content}, 
-            ${publications.author.name});`;
-
-        } catch (error) {
-            console.error("Database error:", error);
-            throw new Error(`Error saving in the db: ${error instanceof Error ? error.message : String(error)}`);
-        }
-
-
+    public async run(title: string, description: string, author: string): Promise<void> {
+        const publication = Publication.create(title, description, author);
+        await this.repository.save(publication.title.content, publication.description.content, publication.author.name);
     }
 }

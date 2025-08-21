@@ -1,13 +1,14 @@
-import next from "next";
 import { NextRequest, NextResponse } from "next/server";
-import Publication from "../utils/publication";
 import PublicRegister from "../utils/public-register";
+import PostgresPublicationRepository from "../utils/postgres-publication-repository";
+import InMemoryPublicationRepository from "../utils/in-memory-publication-repository";
 
 export async function POST(request: NextRequest) {
     try {
         const data = await request.json();
-        const register = new PublicRegister();
-        await register.save(data.title, data.description, data.author);
+        const repository = new PostgresPublicationRepository();
+        const register = new PublicRegister(repository);
+        await register.run(data.title, data.description, data.author);
 
         return NextResponse.json({
             message: 'The post has been saved successfully'
