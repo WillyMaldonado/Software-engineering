@@ -20,3 +20,20 @@ export async function POST(request: NextRequest) {
         }, { status: 500 });
     }
 }
+
+export async function GET(request: NextRequest) {
+    try {
+        const repository = new PostgresPublicationRepository();
+        const data = await repository.getPublications();
+
+        return NextResponse.json({
+            success: true,
+            publications: data,
+        });
+    } catch (error) {
+        console.error('Error fetching publications:', error);
+        return NextResponse.json({
+            success: false, message: 'Failed to fetch publications',
+        }, { status: 500 });
+    }
+}

@@ -23,4 +23,14 @@ export default class PostgresPublicationRepository implements PublicRepository {
             throw new Error(`Failed to save publication: ${error instanceof Error ? error.message : String(error)}`);
         }
     }
+
+    async getPublications(): Promise<Publication[]> {
+        try {
+            const result = await this.sql`SELECT * FROM publications;`;
+            return result.map(row => new Publication(row.title, row.description, row.author));
+        } catch (error) {
+            console.error("Database fetch error:", error);
+            throw new Error(`Failed to fetch publications: ${error instanceof Error ? error.message : String(error)}`);
+        }
+    }
 }

@@ -14,5 +14,6 @@ export default class InMemoryPublicationRepository implements PublicRepository {
 
     public async save(title: string, description: string, author: string) {
         this.publications.push({ title, description, author });
+        console.log(this.publications.length);
     }
 }
