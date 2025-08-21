@@ -6,10 +6,8 @@ import PublicRegister from "../utils/public-register";
 export async function POST(request: NextRequest) {
     try {
         const data = await request.json();
-        const publication = new Publication(data.title, data.description, data.author);
         const register = new PublicRegister();
-
-        register.save(publication);
+        await register.save(data.title, data.description, data.author);
 
         return NextResponse.json({
             message: 'The post has been saved successfully'
